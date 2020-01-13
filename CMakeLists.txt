@@ -63,7 +63,6 @@ set(APP_INC_PATH    "${CMAKE_SOURCE_DIR}/${APP_DIR_NAME}/${APP_NAME}/${INC}")
 set(COMMON_SRC_PATH "${CMAKE_SOURCE_DIR}/${COMMON}/${SRC}")
 set(COMMON_INC_PATH "${CMAKE_SOURCE_DIR}/${COMMON}/${INC}")
 
-
 # ----------------------- STUFF TO TAKE CARE OF -----------------------
 # Set names for libraries
 set(USART_IRQ_LIB "usart_irq")
@@ -74,9 +73,7 @@ set(GPIO "gpio")
 
 # Set names for modules
 set(OSC "OSC")
-set(TEST_MODULE "TEST_MODULE")
 set(SEQ "SEQ")
-
 
 # Create list of libraries required for particular module
 set(LIBS_LIST "")
@@ -85,10 +82,6 @@ if("${APP_NAME}" STREQUAL "${OSC}")
         #${ADC_TIMER_LIB}
                             ${WAVE_GENERATOR}
                             ${GPIO})
-
-elseif("${APP_NAME}" STREQUAL "${TEST_MODULE}")
-    list(APPEND LIBS_LIST   ${BLINK}
-                            ${USART_IRQ_LIB})
 
 elseif("${APP_NAME}" STREQUAL "${SEQ}")
     list(APPEND LIBS_LIST   ${USART_IRQ_LIB} 
@@ -115,8 +108,6 @@ target_include_directories(${WAVE_GENERATOR} PUBLIC ${COMMON_INC_PATH})
 target_include_directories(${GPIO} PUBLIC ${COMMON_INC_PATH})
 # ----------------------- END OF STUFF TO TAKE CARE OF -----------------------
 
-
-
 # Pick files to be compiled as main executable
 file(GLOB SRC_FILES "${APP_SRC_PATH}/*.c")
 
@@ -127,7 +118,6 @@ set_target_properties(${APP_NAME} PROPERTIES OUTPUT_NAME "${APP_NAME}.elf")
 
 # Add libraries for particular modules (apps)
 target_link_libraries(${APP_NAME} PUBLIC ${LIBS_LIST})
-
 
 # Compiling targets
 add_custom_target(strip ALL     ${AVRSTRIP} "${APP_NAME}.elf" DEPENDS ${APP_NAME})
@@ -145,9 +135,6 @@ add_custom_target(fuses_16mhz   ${AVRDUDE} -c ${PROG_TYPE} -p ${MCU} ${PROG_ARGS
 # Utilities targets
 add_custom_target(avr_terminal  ${AVRDUDE} -c ${PROG_TYPE} -p ${MCU} ${PROG_ARGS} -nt)
 add_custom_target(size          ${AVRSIZE} -C "--mcu=${MCU}" "${APP_NAME}.elf" DEPENDS ${APP_NAME})
-
-
-
 
 # Config logging
 message("* -----")
